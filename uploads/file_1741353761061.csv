@@ -1,0 +1,6 @@
+Carrier,Effective Date,Destination Port,Container Type,Ocean Freight Rate,Origin Port
+Maersk,2025-03-10,Los Angeles,40ft,2500,Shanghai
+CMA CGM,2025-03-12,Hamburg,20ft,1800,Singapore
+Hapag-Lloyd,2025-03-15,Dubai,40ft,2700,Mumbai
+Evergreen,2025-03-18,Tokyo,20ft,2000,Sydney
+MSC,2025-03-20,Rotterdam,40ft,3000,New York
