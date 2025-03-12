@@ -62,3 +62,36 @@ exports.uploadFile = async (req, res) => {
     res.status(500).json({ message: "Error processing file" });
   }
 };
+let ExcelData =[];
+
+exports.DynamicColumn = async (req, res) => {
+  try {
+    const workbook = xlsx.readFile(req.file.filename);
+    const sheetName = workbook.sheetName[0];
+    const sheet = workbook.Sheets[sheetName];
+
+    const jsonData = xlsx.utils.sheet_to_json(sheet, { defval: "" });
+
+    if (jsonData.length === 0) {
+      return res.status(400).json({ error: "The Excel File is Empty" });
+    }
+
+    ExcelData = jsonData;
+
+    const mappedData = ExcelData.map((row) => {
+      let mappedRow = {};
+
+      for (let col in row) {
+        const mappedKey = columnMapping[col.trim()];
+        if (mappedKey) {
+          mappedRow[mappedKey] = row[col];
+        }
+      }
+      return mappedRow;
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" }); 
+  }
+};
+
