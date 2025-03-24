@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post("/", upload.single("file"), uploadFile);
 
-router.post("/dynamic-column", upload.single("file"), dynamicColumn);
+
 
 module.exports = router;

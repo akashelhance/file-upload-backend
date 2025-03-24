@@ -9,7 +9,14 @@ exports.uploadFile = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const filePath = path.join(__dirname, "../uploads", req.file.filename);
+    const uploadDir = path.join(__dirname, "../uploads");
+
+   
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true }); 
+    }
+
+    const filePath = path.join(uploadDir, req.file.filename);
 
     if (!fs.existsSync(filePath)) {
       return res.status(400).json({ message: "Uploaded file not found" });
@@ -51,6 +58,8 @@ exports.uploadFile = async (req, res) => {
       return res.status(400).json({ message: validationError });
     }
 
+   
+    console.log(`File successfully uploaded: ${req.file.filename}`);
 
     res.status(200).json({
       message: "File uploaded and processed successfully",
@@ -62,36 +71,3 @@ exports.uploadFile = async (req, res) => {
     res.status(500).json({ message: "Error processing file" });
   }
 };
-let ExcelData =[];
-
-exports.DynamicColumn = async (req, res) => {
-  try {
-    const workbook = xlsx.readFile(req.file.filename);
-    const sheetName = workbook.sheetName[0];
-    const sheet = workbook.Sheets[sheetName];
-
-    const jsonData = xlsx.utils.sheet_to_json(sheet, { defval: "" });
-
-    if (jsonData.length === 0) {
-      return res.status(400).json({ error: "The Excel File is Empty" });
-    }
-
-    ExcelData = jsonData;
-
-    const mappedData = ExcelData.map((row) => {
-      let mappedRow = {};
-
-      for (let col in row) {
-        const mappedKey = columnMapping[col.trim()];
-        if (mappedKey) {
-          mappedRow[mappedKey] = row[col];
-        }
-      }
-      return mappedRow;
-    });
-
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred" }); 
-  }
-};
-
